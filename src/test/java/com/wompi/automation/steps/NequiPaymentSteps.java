@@ -77,7 +77,7 @@ public class NequiPaymentSteps {
         // Crear la transacción
         response = nequiPaymentPage.createNequiPayment(paymentRequest);
         
-        System.out.println("Transacción creada con ID: " + 
+                System.out.println("Transacción creada con ID: " +
                           nequiPaymentPage.getTransactionId(response));
     }
     
