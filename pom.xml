@@ -54,82 +54,59 @@
   </dependencies>
 
   <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <version>3.2.5</version>
-        <configuration>
-          <includes>
-            <include>**/*Test.java</include>
-            <include>**/*Tests.java</include>
-            <include>**/*Runner.java</include>
-          </includes>
-        </configuration>
-      </plugin>
-      
-      <!-- Plugin para SpotBugs (análisis estático de código) -->
-      <plugin>
-        <groupId>com.github.spotbugs</groupId>
-        <artifactId>spotbugs-maven-plugin</artifactId>
-        <version>4.7.3.6</version>
-        <configuration>
-          <effort>Max</effort>
-          <threshold>Low</threshold>
-          <xmlOutput>true</xmlOutput>
-          <xmlOutputDirectory>${project.build.directory}/spotbugs</xmlOutputDirectory>
-        </configuration>
-      </plugin>
-      
-      <!-- Plugin para Checkstyle (estilo de código) - Temporalmente deshabilitado -->
-      <!-- Problema: Configuración incompatible con la versión del plugin -->
-      <!--
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>3.3.1</version>
-        <configuration>
-          <configLocation>googleCheck.xml</configLocation>
-          <consoleOutput>true</consoleOutput>
-          <failsOnError>false</failsOnError>
-          <linkXRef>false</linkXRef>
-          <skip>true</skip>
-        </configuration>
-      </plugin>
-      -->
-      
-      <!-- Plugin para generar reportes de cobertura - Temporalmente deshabilitado -->
-      <!-- Problema: JaCoCo 0.8.11 no es compatible con Java 21 -->
-      <!-- Solución: Actualizar a JaCoCo 0.8.11+ cuando esté disponible -->
-      <!--
-      <plugin>
-        <groupId>org.jacoco</groupId>
-        <artifactId>jacoco-maven-plugin</artifactId>
-        <version>0.8.11</version>
-        <configuration>
-          <excludes>
-            <exclude>**/sun/**</exclude>
-            <exclude>**/javax/**</exclude>
-            <exclude>**/jdk/**</exclude>
-            <exclude>**/java/**</exclude>
-          </excludes>
-        </configuration>
-        <executions>
-          <execution>
-            <goals>
-              <goal>prepare-agent</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>report</id>
-            <phase>test</phase>
-            <goals>
-              <goal>report</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      -->
+     <plugins>
+        <!-- Ejecutar pruebas con Cucumber y generar JSON -->
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>3.2.5</version>
+            <configuration>
+                <includes>
+                    <include>**/CucumberTestRunner.java</include>
+                </includes>
+                <systemPropertyVariables>
+                    <cucumber.features>src/test/resources/features</cucumber.features>
+                    <cucumber.glue>com.wompi.automation.steps</cucumber.glue>
+                    <cucumber.plugin>pretty,json:target/cucumber-reports/report.json</cucumber.plugin>
+                </systemPropertyVariables>
+            </configuration>
+        </plugin>
+
+        <!-- SpotBugs (Análisis estático de código) -->
+        <plugin>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-maven-plugin</artifactId>
+            <version>4.7.3.6</version>
+            <configuration>
+                <effort>Max</effort>
+                <threshold>Low</threshold>
+                <xmlOutput>true</xmlOutput>
+                <xmlOutputDirectory>${project.build.directory}/spotbugs</xmlOutputDirectory>
+            </configuration>
+        </plugin>
+
+        <!-- Reporte HTML de Cucumber -->
+        <plugin>
+            <groupId>net.masterthought</groupId>
+            <artifactId>maven-cucumber-reporting</artifactId>
+            <version>5.7.5</version>
+            <executions>
+                <execution>
+                    <id>cucumber-reports</id>
+                    <phase>verify</phase>
+                    <goals>
+                        <goal>generate</goal>
+                    </goals>
+                    <configuration>
+                        <projectName>Wompi API Automation</projectName>
+                        <outputDirectory>${project.build.directory}/cucumber-report-html</outputDirectory>
+                        <jsonFiles>
+                            <param>${project.build.directory}/cucumber-reports/report.json</param>
+                        </jsonFiles>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
     </plugins>
   </build>
 </project>

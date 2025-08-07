@@ -59,7 +59,7 @@ src/test/resources/
 ```
 Tests run: 5, Failures: 0, Errors: 0, Skipped: 0
 BUILD SUCCESS
-Tiempo de ejecución: 1.054 segundos
+Tiempo de ejecución: 1.102 segundos
 ```
 
 **Escenarios ejecutados exitosamente:**
@@ -176,8 +176,6 @@ El proyecto incluye configuración completa de CI/CD con GitHub Actions:
 
 ### Plugins de Calidad
 - **SpotBugs**: ✅ Funcionando correctamente
-- **Checkstyle**: ⚠️ Temporalmente deshabilitado (problema de configuración)
-- **JaCoCo**: ⚠️ Temporalmente deshabilitado (no compatible con Java 21)
 
 ## Próximos Pasos Sugeridos
 
@@ -189,6 +187,7 @@ El proyecto incluye configuración completa de CI/CD con GitHub Actions:
 ### Mejoras Técnicas
 - **Habilitar Checkstyle**: Resolver problema de configuración del plugin
 - **Habilitar JaCoCo**: Actualizar a versión compatible con Java 21
+- **Habilitar Cucumber HTML Reporting**: Resolver problema de compatibilidad
 - Dockerización del framework
 - Integración con Allure para reportes visuales
 - Migración a JUnit 5
