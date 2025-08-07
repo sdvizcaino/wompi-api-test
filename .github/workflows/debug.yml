@@ -58,4 +58,4 @@ jobs:
     - name: Run Single Test
       run: |
         echo "Running single test with verbose output..."
-        mvn test -Dtest=CucumberTestRunner -X
+        mvn test -Dtest=CucumberTestRunner

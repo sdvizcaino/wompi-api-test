@@ -2,10 +2,14 @@ name: Wompi API Tests
 
 on:
   push:
-    branches: [ main, master, develop ]
+    branches: [ main, develop ]
   pull_request:
-    branches: [ main, master ]
+    branches: [ main ]
   workflow_dispatch:
+
+permissions:
+  checks: write
+  contents: read
 
 jobs:
   test:
@@ -50,7 +54,7 @@ jobs:
         curl -I https://api.co.uat.wompi.dev/v1/merchants/ || echo "API not accessible"
         
     - name: Run tests with Maven
-      run: mvn clean test -X
+      run: mvn clean test
       
     - name: Upload test results
       uses: actions/upload-artifact@v4
