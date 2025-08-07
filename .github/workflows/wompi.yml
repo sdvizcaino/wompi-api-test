@@ -74,11 +74,6 @@ jobs:
         path: target/cucumber-reports/report.html
         retention-days: 30
         
-    - name: Publish Test Results
-      uses: EnricoMi/publish-unit-test-result-action@v2
-      if: always()
-      with:
-        files: "target/surefire-reports/*.xml"
         
   security:
     name: Security Scan
