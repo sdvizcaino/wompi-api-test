@@ -91,10 +91,11 @@ jobs:
           distribution: 'temurin'
 
       - name: Run OWASP Dependency Check (Maven)
-        run: mvn org.owasp:dependency-check-maven:check \
-            -DnvdApiKey=${{ secrets.NVD_API_KEY }} \
-            -Dformat=HTML \
-            -DoutputDirectory=dependency-check-report
+        run: |
+          mvn -DnvdApiKey=${{ secrets.NVD_API_KEY }} \
+              org.owasp:dependency-check-maven:check \
+              -Dformat=HTML \
+              -DoutputDirectory=dependency-check-report
 
       - name: Upload Security Report
         uses: actions/upload-artifact@v4
