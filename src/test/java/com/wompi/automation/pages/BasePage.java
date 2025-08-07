@@ -1,36 +1,31 @@
 package com.wompi.automation.pages;
 
+import com.wompi.automation.utils.TestConfig;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 
 /**
  * Clase base que contiene métodos comunes para todos los endpoints
- * Esta es como la "casa base" de donde heredan todas las demás clases
+ * Utiliza configuración centralizada para mayor flexibilidad
  */
 public class BasePage {
     
-    // URL base de la API de Wompi
-    protected static final String BASE_URL = "https://api.co.uat.wompi.dev/v1";
-    
-    // Llaves de autenticación (como las llaves de una casa)
-    protected static final String PUBLIC_KEY = "pub_stagtest_g2u0HQd3ZMh05hsSgTS2lUV8t3s4mOt7";
-    protected static final String PRIVATE_KEY = "prv_stagtest_5i0ZGIGiFcDQifYsXxvsny7Y37tKqFWg";
-    
     /**
      * Método para obtener la configuración base de las peticiones HTTP
-     * Es como preparar el papel y lápiz antes de escribir
+     * @return RequestSpecification configurado
      */
     protected RequestSpecification getBaseRequest() {
         return RestAssured.given()
-                .baseUri(BASE_URL)
-                .header("Content-Type", "application/json")
-                .header("Accept", "application/json");
+                .baseUri(TestConfig.getApiBaseUrl())
+                .header("Content-Type", TestConfig.getContentType())
+                .header("Accept", TestConfig.getAcceptType());
     }
     
     /**
      * Método para hacer una petición GET
-     * Es como hacer una pregunta simple
+     * @param endpoint endpoint a consultar
+     * @return Response de la API
      */
     protected Response get(String endpoint) {
         return getBaseRequest()
@@ -40,12 +35,50 @@ public class BasePage {
     
     /**
      * Método para hacer una petición POST
-     * Es como enviar una carta con información
+     * @param endpoint endpoint a consultar
+     * @param body cuerpo de la petición
+     * @return Response de la API
      */
     protected Response post(String endpoint, Object body) {
         return getBaseRequest()
                 .body(body)
                 .when()
                 .post(endpoint);
+    }
+    
+    /**
+     * Método para hacer una petición PUT
+     * @param endpoint endpoint a consultar
+     * @param body cuerpo de la petición
+     * @return Response de la API
+     */
+    protected Response put(String endpoint, Object body) {
+        return getBaseRequest()
+                .body(body)
+                .when()
+                .put(endpoint);
+    }
+    
+    /**
+     * Método para hacer una petición DELETE
+     * @param endpoint endpoint a consultar
+     * @return Response de la API
+     */
+    protected Response delete(String endpoint) {
+        return getBaseRequest()
+                .when()
+                .delete(endpoint);
+    }
+    
+    /**
+     * Método para imprimir información de debug de una respuesta
+     * @param response respuesta de la API
+     * @param operationName nombre de la operación para el log
+     */
+    protected void logResponse(Response response, String operationName) {
+        System.out.println("=== " + operationName + " ===");
+        System.out.println("Status Code: " + response.getStatusCode());
+        System.out.println("Response Body: " + response.getBody().asString());
+        System.out.println("================================");
     }
 } 

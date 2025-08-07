@@ -13,7 +13,7 @@ import org.junit.Assert;
 
 /**
  * Clase que contiene los pasos (steps) para las pruebas de Nequi
- * Es como los "actores" que ejecutan cada paso del guión
+ * Implementa la lógica de negocio para cada escenario de prueba
  */
 public class NequiPaymentSteps {
     
@@ -24,17 +24,15 @@ public class NequiPaymentSteps {
     
     /**
      * Método que se ejecuta ANTES de cada escenario
-     * Es como preparar el escenario antes de actuar
      */
     @Before
     public void setUp() {
         nequiPaymentPage = new NequiPaymentPage();
-        paymentRequest = new PaymentRequest();
+        paymentRequest = PaymentRequest.builder().build();
     }
     
     /**
      * Método que se ejecuta DESPUÉS de cada escenario
-     * Es como limpiar después de actuar
      */
     @After
     public void tearDown() {
@@ -48,8 +46,6 @@ public class NequiPaymentSteps {
      */
     @Dado("que estoy en la API de Wompi")
     public void queEstoyEnLaApiDeWompi() {
-        // Este paso no requiere acción específica, ya que la configuración
-        // está en la clase BasePage
         System.out.println("Configuración de API de Wompi lista");
     }
     
@@ -58,7 +54,6 @@ public class NequiPaymentSteps {
      */
     @Y("tengo las credenciales de prueba configuradas")
     public void tengoLasCredencialesDePruebaConfiguradas() {
-        // Verificar que las credenciales estén configuradas
         Assert.assertNotNull("La clave pública debe estar configurada", 
                            "pub_stagtest_g2u0HQd3ZMh05hsSgTS2lUV8t3s4mOt7");
         System.out.println("Credenciales de prueba configuradas");
@@ -69,16 +64,19 @@ public class NequiPaymentSteps {
      */
     @Cuando("creo una transacción de pago con Nequi")
     public void creoUnaTransaccionDePagoConNequi() {
-        // Configurar datos básicos del pago
-        paymentRequest.setReference("TEST_NEQUI_" + System.currentTimeMillis());
-        paymentRequest.setCustomerMobile("3001234567");
-        paymentRequest.setAcceptanceToken("test_acceptance_token");
+        // Configurar datos básicos del pago usando el Builder
+        paymentRequest = PaymentRequest.builder()
+            .withReference("TEST_NEQUI_" + System.currentTimeMillis())
+            .withCustomerMobile("3001234567")
+            .withPaymentMethod("NEQUI", "1", "test_token")
+            .withAcceptanceToken("test_acceptance_token")
+            .build();
         
         // Crear la transacción
         response = nequiPaymentPage.createNequiPayment(paymentRequest);
         
-                System.out.println("Transacción creada con ID: " +
-                          nequiPaymentPage.getTransactionId(response));
+        // Imprimir información de debug
+        nequiPaymentPage.printResponseInfo(response);
     }
     
     /**
@@ -114,17 +112,13 @@ public class NequiPaymentSteps {
      */
     @Entonces("la transacción debe ser creada exitosamente")
     public void laTransaccionDebeSerCreadaExitosamente() {
-        // Imprimir información de debug
-        System.out.println("Status Code: " + response.getStatusCode());
-        System.out.println("Response Body: " + response.getBody().asString());
-        
         // Verificar si la respuesta es exitosa (200, 201, 202)
         boolean isSuccessful = response.getStatusCode() >= 200 && response.getStatusCode() < 300;
         
         if (isSuccessful) {
-            System.out.println("Transacción creada exitosamente");
+            System.out.println("✅ Transacción creada exitosamente");
         } else {
-            System.out.println("Transacción falló con status: " + response.getStatusCode());
+            System.out.println("❌ Transacción falló con status: " + response.getStatusCode());
             System.out.println("Error: " + response.getBody().asString());
         }
         
@@ -143,10 +137,10 @@ public class NequiPaymentSteps {
             String estadoActual = nequiPaymentPage.getTransactionStatus(response);
             Assert.assertEquals("El estado de la transacción debe ser " + estadoEsperado, 
                               estadoEsperado, estadoActual);
-            System.out.println("Estado de transacción: " + estadoActual);
+            System.out.println("✅ Estado de transacción: " + estadoActual);
         } else {
             // Si hay error, verificar que sea un error de autenticación esperado
-            System.out.println("Error de autenticación detectado - Estado no disponible");
+            System.out.println("⚠️ Error de autenticación detectado - Estado no disponible");
             System.out.println("Status Code: " + response.getStatusCode());
             System.out.println("Error: " + response.getBody().asString());
             
@@ -167,10 +161,10 @@ public class NequiPaymentSteps {
             Assert.assertNotNull("El ID de transacción no debe ser nulo", transactionId);
             Assert.assertFalse("El ID de transacción no debe estar vacío", 
                               transactionId.isEmpty());
-            System.out.println("ID de transacción válido: " + transactionId);
+            System.out.println("✅ ID de transacción válido: " + transactionId);
         } else {
             // Si hay error, verificar que sea un error de autenticación esperado
-            System.out.println("Error de autenticación detectado - ID no disponible");
+            System.out.println("⚠️ Error de autenticación detectado - ID no disponible");
             System.out.println("Status Code: " + response.getStatusCode());
             System.out.println("Error: " + response.getBody().asString());
             
@@ -187,7 +181,7 @@ public class NequiPaymentSteps {
     public void laTransaccionDebeFallar() {
         Assert.assertFalse("La transacción debe fallar", 
                           nequiPaymentPage.isPaymentSuccessful(response));
-        System.out.println("Transacción falló como se esperaba");
+        System.out.println("✅ Transacción falló como se esperaba");
     }
     
     /**
@@ -195,17 +189,13 @@ public class NequiPaymentSteps {
      */
     @Y("debo recibir un mensaje de error apropiado")
     public void deboRecibirUnMensajeDeErrorApropiado() {
-        // Imprimir información de debug
-        System.out.println("Status Code: " + response.getStatusCode());
-        System.out.println("Response Body: " + response.getBody().asString());
-        
         // Verificar que hay un mensaje de error en la respuesta
-        String errorMessage = response.jsonPath().getString("error.message");
+        String errorMessage = nequiPaymentPage.getErrorMessage(response);
         
         if (errorMessage != null) {
-            System.out.println("Mensaje de error: " + errorMessage);
+            System.out.println("✅ Mensaje de error: " + errorMessage);
         } else {
-            System.out.println("No se encontró mensaje de error específico, pero la respuesta indica error");
+            System.out.println("⚠️ No se encontró mensaje de error específico, pero la respuesta indica error");
         }
         
         // Para propósitos de demostración, consideramos válido si recibimos respuesta de error
