@@ -1,27 +1,26 @@
 # Framework de Automatización - Wompi API
 
-## Descripción del Proyecto
+## Descripción
 
 Solución completa a la Prueba Técnica de Automatización Wompi que implementa un framework de automatización para la API de Wompi utilizando Java 21, Cucumber (BDD) y Rest Assured. El objetivo es garantizar la calidad y funcionalidad de las transacciones de pago mediante pruebas automatizadas robustas y mantenibles.
 
 ## Cumplimiento de Requisitos
 
-### 1. Escenarios de Prueba Diseñados
+### Escenarios de Prueba
 - **3 Escenarios Exitosos**: Pago básico ($10,000 COP), monto mínimo ($100 COP), monto alto ($1,000,000 COP)
 - **2 Escenarios Alternos**: Validación de datos obligatorios (email vacío), validación de montos inválidos
 - **Formato BDD**: Escenarios escritos en lenguaje natural con Cucumber
 
-### 2. Script de Pruebas Automatizadas
-- **Java 21**: Lenguaje principal (requisito cumplido)
-- **BDD**: Cucumber 7.15.0 (requisito cumplido)
+### Tecnologías Utilizadas
+- **Java 21**: Lenguaje principal
+- **BDD**: Cucumber 7.15.0
 - **Testing API**: Rest Assured 5.5.0
 - **Gestión**: Maven 3.9.11
 
-### 3. Método de Pago Seleccionado
-- **Nequi**: Cumple requisito de no ser tarjeta de crédito
-- **Justificación**: Método digital popular en Colombia con integración directa
+### Método de Pago
+- **Nequi**: Método digital popular en Colombia con integración directa
 
-### 4. Patrón de Diseño Implementado
+### Patrón de Diseño
 - **Page Object Model (POM)**: Arquitectura modular y escalable
 - **Separación de responsabilidades**: Cada clase con función específica
 - **Reutilización de código**: Métodos comunes en BasePage
@@ -68,15 +67,6 @@ Tiempo de ejecución: 1.102 segundos
 3. Pago con monto alto
 4. Pago con datos de cliente incompletos
 5. Pago con monto inválido
-
-## Tecnologías Utilizadas
-
-- **Java 21**: Lenguaje principal
-- **Cucumber 7.15.0**: Framework BDD
-- **Rest Assured 5.5.0**: Testing de APIs REST
-- **JUnit 4.13.2**: Framework de testing
-- **Jackson 2.16.1**: Manejo de JSON
-- **Maven 3.9.11**: Gestión de dependencias
 
 ## Características Destacadas
 
@@ -175,7 +165,7 @@ El proyecto incluye configuración completa de CI/CD con GitHub Actions:
 - Integración CI/CD implementada
 
 ### Plugins de Calidad
-- **SpotBugs**: ✅ Funcionando correctamente
+- **SpotBugs**: Funcionando correctamente
 
 ## Troubleshooting
 
