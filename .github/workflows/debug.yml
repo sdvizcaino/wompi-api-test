@@ -1,0 +1,61 @@
+name: Debug Wompi Tests
+
+on:
+  workflow_dispatch:
+
+jobs:
+  debug:
+    name: Debug Environment
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up JDK 21
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+        cache: maven
+        
+    - name: Debug Environment
+      run: |
+        echo "=== Environment Debug ==="
+        echo "Java version:"
+        java -version
+        echo ""
+        echo "Maven version:"
+        mvn -version
+        echo ""
+        echo "Current directory:"
+        pwd
+        echo ""
+        echo "Directory contents:"
+        ls -la
+        echo ""
+        echo "Test resources:"
+        ls -la src/test/resources/
+        echo ""
+        echo "Config file contents:"
+        cat src/test/resources/config.properties
+        echo ""
+        echo "POM file:"
+        cat pom.xml
+        echo ""
+        echo "=== End Debug ==="
+        
+    - name: Test Maven Compilation
+      run: |
+        echo "Testing Maven compilation..."
+        mvn clean compile test-compile
+        
+    - name: Test Cucumber Runner
+      run: |
+        echo "Testing Cucumber runner compilation..."
+        mvn test-compile -Dtest=CucumberTestRunner
+        
+    - name: Run Single Test
+      run: |
+        echo "Running single test with verbose output..."
+        mvn test -Dtest=CucumberTestRunner -X

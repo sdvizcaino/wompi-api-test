@@ -7,9 +7,6 @@ on:
     branches: [ main, master ]
   workflow_dispatch:
 
-schedule:
-    - cron: '0 11 * * *'  # todos los días - 6AM Colombia (UTC-5)
-
 jobs:
   test:
     name: Run Wompi API Tests
@@ -33,8 +30,27 @@ jobs:
         key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
         restore-keys: ${{ runner.os }}-m2
         
+    - name: Download dependencies
+      run: mvn dependency:resolve
+        
+    - name: Verify Java and Maven setup
+      run: |
+        java -version
+        mvn -version
+        echo "Current directory: $(pwd)"
+        ls -la
+        echo "Checking test resources:"
+        ls -la src/test/resources/
+        echo "Checking config file:"
+        cat src/test/resources/config.properties
+        
+    - name: Test API connectivity
+      run: |
+        echo "Testing connectivity to Wompi API..."
+        curl -I https://api.co.uat.wompi.dev/v1/merchants/ || echo "API not accessible"
+        
     - name: Run tests with Maven
-      run: mvn clean test
+      run: mvn clean test -X
       
     - name: Upload test results
       uses: actions/upload-artifact@v4
