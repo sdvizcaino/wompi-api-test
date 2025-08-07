@@ -177,6 +177,36 @@ El proyecto incluye configuración completa de CI/CD con GitHub Actions:
 ### Plugins de Calidad
 - **SpotBugs**: ✅ Funcionando correctamente
 
+## Troubleshooting
+
+### Problemas en GitHub Actions
+
+Si las pruebas fallan en GitHub Actions pero funcionan localmente:
+
+1. **Verificar logs detallados**: Los logs se generan con el flag `-X` en Maven
+2. **Workflow de debug**: Usar el workflow `debug.yml` para diagnóstico completo
+3. **Configuración de entorno**: Verificar que las configuraciones se carguen correctamente
+4. **Conectividad de API**: Verificar que la API sea accesible desde GitHub Actions
+
+### Problemas Comunes
+
+1. **Error de compilación**: Verificar que Java 21 esté instalado
+2. **Error de dependencias**: Ejecutar `mvn clean install`
+3. **Error de conectividad**: Verificar configuración de red y URLs de API
+4. **Error de timeout**: Aumentar timeouts en `config.properties`
+
+### Logs de Debug
+
+Para obtener más información de debug:
+```bash
+mvn test -X
+```
+
+### Workflows de GitHub Actions
+
+- `wompi.yml`: Workflow principal con pruebas, seguridad y calidad
+- `debug.yml`: Workflow de diagnóstico para problemas en CI/CD
+
 ## Próximos Pasos Sugeridos
 
 ### Funcionalidades Futuras

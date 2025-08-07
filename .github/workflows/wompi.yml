@@ -2,13 +2,14 @@ name: Wompi API Tests
 
 on:
   push:
-    branches: [ main, master, develop ]
+    branches: [ main, develop ]
   pull_request:
-    branches: [ main, master ]
+    branches: [ main ]
   workflow_dispatch:
 
-schedule:
-    - cron: '0 11 * * *'  # todos los días - 6AM Colombia (UTC-5)
+permissions:
+  checks: write
+  contents: read
 
 jobs:
   test:
@@ -33,6 +34,25 @@ jobs:
         key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
         restore-keys: ${{ runner.os }}-m2
         
+    - name: Download dependencies
+      run: mvn dependency:resolve
+        
+    - name: Verify Java and Maven setup
+      run: |
+        java -version
+        mvn -version
+        echo "Current directory: $(pwd)"
+        ls -la
+        echo "Checking test resources:"
+        ls -la src/test/resources/
+        echo "Checking config file:"
+        cat src/test/resources/config.properties
+        
+    - name: Test API connectivity
+      run: |
+        echo "Testing connectivity to Wompi API..."
+        curl -I https://api.co.uat.wompi.dev/v1/merchants/ || echo "API not accessible"
+        
     - name: Run tests with Maven
       run: mvn clean test
       
@@ -54,42 +74,36 @@ jobs:
         path: target/cucumber-reports/report.html
         retention-days: 30
         
-    - name: Publish Test Results
-      uses: EnricoMi/publish-unit-test-result-action@v2
-      if: always()
-      with:
-        files: "target/surefire-reports/*.xml"
         
   security:
     name: Security Scan
     runs-on: ubuntu-latest
     needs: test
-    
+
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      
-    - name: Set up JDK 21
-      uses: actions/setup-java@v4
-      with:
-        java-version: '21'
-        distribution: 'temurin'
-        
-    - name: Run OWASP Dependency Check
-      uses: dependency-check/Dependency-Check_Action@main
-      with:
-        project: 'Wompi API Tests'
-        path: '.'
-        format: 'HTML'
-        out: 'reports'
-        
-    - name: Upload Security Report
-      uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: security-report
-        path: reports/
-        retention-days: 30
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Run OWASP Dependency Check (Maven)
+        run: |
+          mvn -DnvdApiKey=${{ secrets.NVD_API_KEY }} \
+              org.owasp:dependency-check-maven:check \
+              -Dformat=HTML \
+              -DoutputDirectory=dependency-check-report
+
+      - name: Upload Security Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: security-report
+          path: dependency-check-report/
+          retention-days: 30
         
   quality:
     name: Code Quality
@@ -111,10 +125,3 @@ jobs:
       run: |
         mvn spotbugs:check
       continue-on-error: true
-      
-    - name: Comment about Checkstyle and JaCoCo
-      run: |
-        echo "Checkstyle y JaCoCo temporalmente deshabilitados"
-        echo "- Checkstyle: Problema de configuración con la versión del plugin"
-        echo "- JaCoCo: No compatible con Java 21 (versión 0.8.11)"
-        echo "Se habilitarán cuando se resuelvan los problemas de compatibilidad"

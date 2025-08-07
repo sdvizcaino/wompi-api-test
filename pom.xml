@@ -69,6 +69,7 @@
                     <cucumber.glue>com.wompi.automation.steps</cucumber.glue>
                     <cucumber.plugin>pretty,json:target/cucumber-reports/report.json</cucumber.plugin>
                 </systemPropertyVariables>
+                <argLine>-Xmx1024m</argLine>
             </configuration>
         </plugin>
 
