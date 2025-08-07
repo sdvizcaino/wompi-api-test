@@ -20,11 +20,6 @@ Solución completa a la Prueba Técnica de Automatización Wompi que implementa 
 ### Método de Pago
 - **Nequi**: Método digital popular en Colombia con integración directa
 
-### Patrón de Diseño
-- **Page Object Model (POM)**: Arquitectura modular y escalable
-- **Separación de responsabilidades**: Cada clase con función específica
-- **Reutilización de código**: Métodos comunes en BasePage
-
 ## Arquitectura del Framework
 
 ```
@@ -141,49 +136,8 @@ El proyecto incluye configuración completa de CI/CD con GitHub Actions:
 
 ## Valor Agregado
 
-### Mejoras Implementadas
-1. **Patrón Builder**: Creación fluida de objetos
-2. **Configuración centralizada**: Gestión de propiedades
-3. **Logging mejorado**: Formato legible en consola
-4. **Manejo de errores**: Try-catch robusto
-5. **Validaciones**: Método `isValid()` para datos obligatorios
-
-### Framework Profesional
-- **Escalable**: Fácil agregar nuevos métodos de pago
-- **Mantenible**: Código bien estructurado y documentado
-- **Reutilizable**: Componentes modulares
-- **Robusto**: Manejo de errores y validaciones
-
-## Estado del Proyecto
-
-### Completado 100%
-- Todos los requisitos de la prueba técnica cumplidos
-- Framework completamente funcional
-- 5 escenarios de prueba ejecutándose exitosamente
-- Documentación completa y profesional
-- Código optimizado y bien estructurado
-- Integración CI/CD implementada
-
 ### Plugins de Calidad
 - **SpotBugs**: Funcionando correctamente
-
-## Troubleshooting
-
-### Problemas en GitHub Actions
-
-Si las pruebas fallan en GitHub Actions pero funcionan localmente:
-
-1. **Verificar logs detallados**: Los logs se generan con el flag `-X` en Maven
-2. **Workflow de debug**: Usar el workflow `debug.yml` para diagnóstico completo
-3. **Configuración de entorno**: Verificar que las configuraciones se carguen correctamente
-4. **Conectividad de API**: Verificar que la API sea accesible desde GitHub Actions
-
-### Problemas Comunes
-
-1. **Error de compilación**: Verificar que Java 21 esté instalado
-2. **Error de dependencias**: Ejecutar `mvn clean install`
-3. **Error de conectividad**: Verificar configuración de red y URLs de API
-4. **Error de timeout**: Aumentar timeouts en `config.properties`
 
 ### Logs de Debug
 
